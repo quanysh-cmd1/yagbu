@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: yagbu-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: yagbu
+      POSTGRES_USER: yagbu
+      POSTGRES_PASSWORD: yagbu
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: yagbu-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: ./services/api
+    container_name: yagbu-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://yagbu:yagbu@db:5432/yagbu
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: changeme-dev-secret
+      APP_ENV: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./services/api:/app
+
+  worker:
+    build:
+      context: ./services/worker
+    container_name: yagbu-worker
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://yagbu:yagbu@db:5432/yagbu
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./services/worker:/app
+
+volumes:
+  postgres_data:
