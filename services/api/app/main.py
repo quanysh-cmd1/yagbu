@@ -13,12 +13,13 @@ from .routers.jobs import router as jobs_router
 from .routers.model_registry import router as model_registry_router
 from .routers.models import router as models_router
 from .routers.monitoring import router as monitoring_router
+from .routers.ops import router as ops_router
 from .routers.usage import router as usage_router
 
 app = FastAPI(
     title="YAGBU API",
-    version="0.5.0",
-    description="Production-oriented SaaS API for YAGBU",
+    version="0.6.0",
+    description="Production-ready SaaS API for YAGBU",
 )
 
 app.include_router(health_router)
@@ -33,15 +34,17 @@ app.include_router(billing_router)
 app.include_router(admin_router)
 app.include_router(admin_ui_router)
 app.include_router(monitoring_router)
+app.include_router(ops_router)
 
 
 @app.get("/")
 def root() -> dict:
     return {
         "service": "yagbu-api",
-        "version": "0.5.0",
+        "version": "0.6.0",
         "status": "ok",
         "dashboard": "/dashboard",
+        "ops": "/ops/readiness",
     }
 
 
