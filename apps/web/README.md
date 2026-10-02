@@ -1,12 +1,18 @@
-# YAGBU web dashboard
+# YAGBU Dashboard
 
-This app will host the SaaS dashboard for model deployments, usage analytics, API keys, project settings, and billing.
+This is the dashboard app shell for the SaaS platform.
 
-Planned features:
-- sign in / sign up
-- organization dashboard
-- model catalog
-- deployment health
-- usage analytics
-- API key management
-- billing overview
+## Features
+
+- overview cards
+- health panel
+- usage metrics
+- deployments summary
+- admin analytics
+
+## Run locally
+
+```bash
+cd apps/web
+python -m uvicorn main:app --reload --port 9000
+```
